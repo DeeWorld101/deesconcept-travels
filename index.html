@@ -1,456 +1,897 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deesconcept Client Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --primary: #0f172a;
-            --sidebar-bg: #1e293b;
-            --accent: #2563eb;
-            --accent-hover: #1d4ed8;
-            --accent-light: #eff6ff;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #334155;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --sidebar-width: 260px;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Sidebar Navigation */
-        aside {
-            width: var(--sidebar-width);
-            background: var(--sidebar-bg);
-            color: #ffffff;
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease;
-            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .sidebar-header {
-            padding: 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .logo {
-            font-size: 1.25rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .logo span {
-            color: #60a5fa;
-        }
-
-        .close-sidebar {
-            display: none;
-            background: none;
-            border: none;
-            color: #ffffff;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .sidebar-menu {
-            list-style: none;
-            padding: 1rem 0;
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        .sidebar-menu li a {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.85rem 1.5rem;
-            color: #94a3b8;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-        }
-
-        .sidebar-menu li a:hover, 
-        .sidebar-menu li a.active {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.08);
-            border-left: 4px solid var(--accent);
-        }
-
-        /* Main Content Area */
-        .main-content {
-            flex: 1;
-            margin-left: var(--sidebar-width);
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-
-        /* Top Header Bar */
-        header {
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 90;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .menu-btn {
-            display: none;
-            background: none;
-            border: 1px solid var(--border);
-            padding: 0.5rem;
-            border-radius: 6px;
-            cursor: pointer;
-            color: var(--text-main);
-            font-size: 1.2rem;
-        }
-
-        .hub-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .user-badge {
-            background: var(--accent-light);
-            color: var(--accent);
-            padding: 0.4rem 0.8rem;
-            border-radius: 9999px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        /* Workspace Dashboard */
-        main {
-            padding: 2rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 1.5rem;
-            max-width: 1500px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .card h2 {
-            font-size: 1.15rem;
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .card p {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
-
-        /* Interactive Elements inside Cards */
-        .lead-card-sample {
-            background: #f8fafc;
-            border: 1px solid var(--border);
-            padding: 0.75rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-            cursor: pointer;
-            transition: border-color 0.2s;
-        }
-
-        .lead-card-sample:hover {
-            border-color: var(--accent);
-        }
-
-        .badge-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .badge-item {
-            background: var(--accent-light);
-            border-left: 3px solid var(--accent);
-            padding: 0.75rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-        }
-
-        .badge-item span {
-            font-weight: 600;
-            display: block;
-            color: var(--primary);
-            margin-bottom: 0.2rem;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 0.6rem 1rem;
-            border-radius: 6px;
-            font-weight: 500;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: background 0.2s;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-hover);
-        }
-
-        .scanner-box {
-            border: 2px dashed var(--border);
-            border-radius: 8px;
-            padding: 1.2rem;
-            text-align: center;
-            background: #fbfcfe;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        /* Responsive Breakpoints */
-        @media (max-width: 1024px) {
-            aside {
-                transform: translateX(-100%);
-            }
-            aside.open {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 0;
-            }
-            .menu-btn {
-                display: block;
-            }
-            .close-sidebar {
-                display: block;
-            }
-        }
-
-        @media (max-width: 768px) {
-            main {
-                padding: 1rem;
-                grid-template-columns: 1fr;
-            }
-            header {
-                padding: 1rem;
-            }
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white">
 
-    <!-- Sidebar Navigation -->
-    <aside id="sidebar">
-        <div class="sidebar-header">
-            <div class="logo">Dees<span>concept</span></div>
-            <button class="close-sidebar" id="closeSidebar">&times;</button>
+    <!-- Top Fixed Navigation Bar -->
+    <header class="bg-slate-900 text-white shadow-md fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-4 sm:px-6">
+        <div class="flex items-center space-x-3">
+            <!-- Hamburger Toggle Button for Quick Sidebar Access -->
+            <button onclick="toggleSidebar()" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center transition focus:outline-none" aria-label="Toggle Menu">
+                <i class="fa-solid fa-bars text-base" id="hamburgerIcon"></i>
+            </button>
+            <div class="flex items-center space-x-2.5">
+                <div class="bg-blue-600 text-white font-bold text-lg flex items-center justify-center w-9 h-9 rounded-xl shadow-inner">
+                    <i class="fa-solid fa-cube text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base sm:text-lg leading-tight tracking-tight">Dees<span class="text-blue-400">concept</span></h1>
+                    <p class="text-[10px] text-slate-400 hidden sm:block">Client Hub & Business Suite</p>
+                </div>
+            </div>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="#leads" class="active">📊 Leads Dashboard</a></li>
-            <li><a href="#inbox">💬 Inbox Channels</a></li>
-            <li><a href="#new-lead">🔗 New Lead Form</a></li>
-            <li><a href="#scanner">📷 Business Card Scanner</a></li>
-            <li><a href="#quote">📋 Quote Builder</a></li>
-            <li><a href="#insights">📈 Insights & Trends</a></li>
-            <li><a href="#money">💰 Money Tracker</a></li>
-            <li><a href="#sales-bible">📖 Sales Bible</a></li>
-        </ul>
-    </aside>
 
-    <!-- Main Application Wrapper -->
-    <div class="main-content">
-        <!-- Top Header Bar -->
-        <header>
-            <div class="header-left">
-                <button class="menu-btn" id="menuBtn">&#9776;</button>
-                <div class="hub-title">Client Hub Workspace</div>
+        <!-- Right Quick Actions -->
+        <div class="flex items-center space-x-3">
+            <button onclick="openModal('quickLeadModal')" class="bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition flex items-center space-x-2 shadow-sm">
+                <i class="fa-solid fa-plus"></i>
+                <span class="hidden sm:inline">New Lead</span>
+            </button>
+            <div class="relative">
+                <button onclick="showToast('No new notifications')" class="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition">
+                    <i class="fa-solid fa-bell text-xs"></i>
+                    <span class="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                </button>
             </div>
-            <div class="user-badge">Active Session</div>
-        </header>
+        </div>
+    </header>
 
-        <!-- Dashboard Grid -->
-        <main>
-            <!-- Leads Module -->
-            <div class="card" id="leads">
-                <div class="card-header">
-                    <h2>Leads</h2>
-                </div>
-                <p>Every inquiry from WhatsApp, Instagram, and Facebook lands here as a card. Tap a card to inspect client details.</p>
-                <div class="lead-card-sample">
-                    <strong>Jane Doe</strong> • WhatsApp Inquiry<br>
-                    <small style="color: var(--text-muted);">Package: Benin Republic Getaway (Feb 2026)</small>
-                </div>
-            </div>
-
-            <!-- Inbox Module -->
-            <div class="card" id="inbox">
-                <div class="card-header">
-                    <h2>Inbox</h2>
-                </div>
-                <p>Sample of messages pulled in from connected communication channels.</p>
-                <div class="badge-item">
-                    <span>Instagram DM • 10 mins ago</span>
-                    "Hi, are there still slots available for the group trip?"
-                </div>
-            </div>
-
-            <!-- New Lead Form Module -->
-            <div class="card" id="new-lead">
-                <div class="card-header">
-                    <h2>New lead</h2>
-                </div>
-                <p>Share this link on your WhatsApp status or Instagram bio to automatically gather incoming client requests.</p>
-                <button class="btn-primary" onclick="alert('Form link copied to clipboard!')">Copy Public Form Link</button>
+    <!-- Main App Container (Pushed down by pt-20 to clear fixed header) -->
+    <div class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12 flex gap-6 relative">
+        
+        <!-- Collapsible Sidebar Navigation -->
+        <aside id="appSidebar" class="w-64 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between fixed md:sticky top-20 h-[calc(100vh-6rem)] z-40 transition-all duration-300 ease-in-out transform -translate-x-72 md:translate-x-0">
+            <div class="space-y-1.5 overflow-y-auto flex-1 pr-1" id="navTabs">
+                <div class="text-[11px] font-bold text-slate-400 uppercase px-3 py-1 tracking-wider">Navigation</div>
+                <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition bg-blue-50 text-blue-600">
+                    <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                    <span>Overview & Insights</span>
+                </button>
+                <button onclick="switchTab('leads')" data-tab="leads" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                    <i class="fa-solid fa-address-book w-5 text-center"></i>
+                    <span>Leads Board</span>
+                    <span id="leadBadge" class="ml-auto bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded-full font-semibold">4</span>
+                </button>
+                <button onclick="switchTab('inbox')" data-tab="inbox" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                    <i class="fa-solid fa-inbox w-5 text-center"></i>
+                    <span>Inbox</span>
+                    <span class="ml-auto bg-blue-100 text-blue-600 text-xs px-2 py-0.5 rounded-full font-semibold">2</span>
+                </button>
+                <button onclick="switchTab('quote')" data-tab="quote" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                    <i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i>
+                    <span>Quote Builder</span>
+                </button>
+                <button onclick="switchTab('scanner')" data-tab="scanner" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                    <i class="fa-solid fa-camera-retro w-5 text-center"></i>
+                    <span>Card Scanner</span>
+                </button>
+                <button onclick="switchTab('money')" data-tab="money" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                    <i class="fa-solid fa-wallet w-5 text-center"></i>
+                    <span>Money Tracker</span>
+                </button>
+                <button onclick="switchTab('salesbible')" data-tab="salesbible" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+                    <i class="fa-solid fa-book-open w-5 text-center"></i>
+                    <span>Sales Bible</span>
+                </button>
             </div>
 
-            <!-- Business Card Scanner Module -->
-            <div class="card" id="scanner">
-                <div class="card-header">
-                    <h2>Scan a business card</h2>
-                </div>
-                <p>Point the camera at a card to automatically parse details and save straight to your leads.</p>
-                <div class="scanner-box">
-                    Camera access requires secure https:// hosting.
-                </div>
-            </div>
-
-            <!-- Quote Builder Module -->
-            <div class="card" id="quote">
-                <div class="card-header">
-                    <h2>Quote builder</h2>
-                </div>
-                <p>Fill this in and send the structured summary straight to a client's WhatsApp.</p>
-                <button class="btn-primary" onclick="alert('Opening WhatsApp Quote Template...')">Generate WhatsApp Quote</button>
-            </div>
-
-            <!-- Insights Module -->
-            <div class="card" id="insights">
-                <div class="card-header">
-                    <h2>Insights</h2>
-                </div>
-                <p>A quick breakdown of client demographics and peak travel seasons built from your active leads.</p>
-                <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
-                    • Top Destination: Benin Republic<br>
-                    • Peak Inquiry Channel: WhatsApp (78%)
-                </div>
-            </div>
-
-            <!-- Money Tracker Module -->
-            <div class="card" id="money">
-                <div class="card-header">
-                    <h2>Money Tracker</h2>
-                </div>
-                <p>Revenue, expenses, and outstanding payments in one unified view.</p>
-                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; background: #f8fafc; padding: 0.75rem; border-radius: 6px;">
-                    <div><strong>Revenue:</strong> $4,250</div>
-                    <div><strong>Pending:</strong> $850</div>
-                </div>
-            </div>
-
-            <!-- Sales Bible Module -->
-            <div class="card" id="sales-bible">
-                <div class="card-header">
-                    <h2>Sales Bible</h2>
-                </div>
-                <p>The company's operating manual ensuring consistent team communication and escalation protocols.</p>
-                
-                <div class="badge-list">
-                    <h3>Escalation rules</h3>
-                    <div class="badge-item">
-                        <span>Staff can handle</span>
-                        General enquiries, basic package questions, availability requests, standard quotations.
+            <!-- Agency Status Card inside Sidebar -->
+            <div class="mt-4 pt-4 border-t border-slate-100">
+                <div class="bg-gradient-to-br from-slate-900 to-blue-900 p-3 rounded-xl text-white">
+                    <div class="flex items-center space-x-2 mb-1">
+                        <i class="fa-solid fa-bolt text-amber-400 text-xs"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider">Sync Status</span>
                     </div>
-                    <div class="badge-item">
-                        <span>Needs manager approval</span>
-                        Large discounts, refunds, complaints, special corporate deals, high-value bookings.
+                    <p class="text-[11px] text-slate-300">WhatsApp & IG live feeds operational.</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Sidebar Backdrop for Mobile -->
+        <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-30 hidden md:hidden"></div>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm min-w-0">
+            
+            <!-- TAB 1: OVERVIEW & INSIGHTS -->
+            <div id="tab-dashboard" class="tab-content space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Business Overview</h2>
+                        <p class="text-sm text-slate-500">Welcome back! Here is your business performance snapshot.</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span class="w-2 h-2 mr-1.5 bg-emerald-500 rounded-full animate-ping"></span> Live sync active
+                        </span>
                     </div>
                 </div>
+
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-slate-50 border border-slate-200/80 p-4 rounded-xl">
+                        <div class="flex items-center justify-between text-slate-500 mb-2">
+                            <span class="text-xs font-semibold uppercase tracking-wider">Total Leads</span>
+                            <i class="fa-solid fa-users text-blue-600"></i>
+                        </div>
+                        <div class="text-2xl font-bold text-slate-900" id="statTotalLeads">4</div>
+                        <div class="text-xs text-emerald-600 font-medium mt-1"><i class="fa-solid fa-arrow-up"></i> +12% this week</div>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200/80 p-4 rounded-xl">
+                        <div class="flex items-center justify-between text-slate-500 mb-2">
+                            <span class="text-xs font-semibold uppercase tracking-wider">Pending Quotes</span>
+                            <i class="fa-solid fa-file-lines text-amber-500"></i>
+                        </div>
+                        <div class="text-2xl font-bold text-slate-900">2</div>
+                        <div class="text-xs text-slate-500 mt-1">Awaiting client response</div>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200/80 p-4 rounded-xl">
+                        <div class="flex items-center justify-between text-slate-500 mb-2">
+                            <span class="text-xs font-semibold uppercase tracking-wider">Revenue (NGN)</span>
+                            <i class="fa-solid fa-wallet text-emerald-600"></i>
+                        </div>
+                        <div class="text-2xl font-bold text-slate-900">₦1,450,000</div>
+                        <div class="text-xs text-emerald-600 font-medium mt-1"><i class="fa-solid fa-arrow-up"></i> +8.4% vs last month</div>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200/80 p-4 rounded-xl">
+                        <div class="flex items-center justify-between text-slate-500 mb-2">
+                            <span class="text-xs font-semibold uppercase tracking-wider">Conversion Rate</span>
+                            <i class="fa-solid fa-chart-line text-indigo-600"></i>
+                        </div>
+                        <div class="text-2xl font-bold text-slate-900">34.8%</div>
+                        <div class="text-xs text-slate-500 mt-1">WhatsApp inquiries lead</div>
+                    </div>
+                </div>
+
+                <!-- Insights & Lead Capture Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
+                    <div class="bg-slate-50 border border-slate-200/80 p-5 rounded-xl">
+                        <h3 class="font-semibold text-slate-900 mb-4 flex items-center justify-between">
+                            <span>Inquiry Channels Breakdown</span>
+                            <span class="text-xs font-normal text-slate-500">Last 30 Days</span>
+                        </h3>
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-xs font-medium mb-1">
+                                    <span class="flex items-center text-slate-700"><i class="fa-brands fa-whatsapp text-emerald-500 mr-2 text-sm"></i> WhatsApp</span>
+                                    <span>68%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-emerald-500 h-full rounded-full" style="width: 68%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-medium mb-1">
+                                    <span class="flex items-center text-slate-700"><i class="fa-brands fa-instagram text-pink-500 mr-2 text-sm"></i> Instagram DM</span>
+                                    <span>22%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-pink-500 h-full rounded-full" style="width: 22%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-medium mb-1">
+                                    <span class="flex items-center text-slate-700"><i class="fa-brands fa-facebook text-blue-600 mr-2 text-sm"></i> Facebook Page</span>
+                                    <span>10%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-blue-600 h-full rounded-full" style="width: 10%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200/80 p-5 rounded-xl flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-semibold text-slate-900 mb-2">Shareable Lead Capture Form</h3>
+                            <p class="text-sm text-slate-500 mb-4">Paste this link on your WhatsApp Status or Instagram Bio to allow clients to send inquiries instantly.</p>
+                        </div>
+                        <div class="flex items-center space-x-2 bg-white border border-slate-200 p-2 rounded-lg">
+                            <input type="text" id="shareableLinkInput" readonly value="https://deesconcept.app/inquire/client-hub" class="w-full text-xs text-slate-600 bg-transparent outline-none px-1">
+                            <button onclick="copyShareableLink()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs px-3 py-1.5 rounded font-medium transition flex-shrink-0">
+                                <i class="fa-solid fa-copy mr-1"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- TAB 2: LEADS BOARD -->
+            <div id="tab-leads" class="tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Leads Pipeline</h2>
+                        <p class="text-sm text-slate-500">Organize and track inquiries across stages. Drag cards between columns.</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button onclick="openModal('quickLeadModal')" class="bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center space-x-2">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                            <span>Add Lead</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Kanban Columns Container -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pb-4">
+                    
+                    <!-- Column 1: New Inquiry -->
+                    <div class="bg-slate-50/70 border border-slate-200 rounded-xl p-4 flex flex-col min-h-[420px]">
+                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+                                <h3 class="font-semibold text-sm text-slate-800">New Inquiries</h3>
+                            </div>
+                            <span id="countNew" class="bg-slate-200 text-slate-700 text-xs px-2 py-0.5 rounded-full font-bold">2</span>
+                        </div>
+                        <div id="columnNew" class="space-y-3 flex-1 overflow-y-auto min-h-[250px]" ondragover="allowDrop(event)" ondrop="dropLead(event, 'new')">
+                            <!-- Cards injected via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Quote Sent -->
+                    <div class="bg-slate-50/70 border border-slate-200 rounded-xl p-4 flex flex-col min-h-[420px]">
+                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                                <h3 class="font-semibold text-sm text-slate-800">Quote Sent</h3>
+                            </div>
+                            <span id="countQuote" class="bg-slate-200 text-slate-700 text-xs px-2 py-0.5 rounded-full font-bold">1</span>
+                        </div>
+                        <div id="columnQuote" class="space-y-3 flex-1 overflow-y-auto min-h-[250px]" ondragover="allowDrop(event)" ondrop="dropLead(event, 'quote')">
+                            <!-- Cards injected via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Column 3: Booked / Closed -->
+                    <div class="bg-slate-50/70 border border-slate-200 rounded-xl p-4 flex flex-col min-h-[420px]">
+                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                                <h3 class="font-semibold text-sm text-slate-800">Booked & Paid</h3>
+                            </div>
+                            <span id="countClosed" class="bg-slate-200 text-slate-700 text-xs px-2 py-0.5 rounded-full font-bold">1</span>
+                        </div>
+                        <div id="columnClosed" class="space-y-3 flex-1 overflow-y-auto min-h-[250px]" ondragover="allowDrop(event)" ondrop="dropLead(event, 'closed')">
+                            <!-- Cards injected via JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 3: INBOX -->
+            <div id="tab-inbox" class="tab-content hidden space-y-4">
+                <div class="pb-4 border-b border-slate-100">
+                    <h2 class="text-xl font-bold text-slate-900">Unified Client Inbox</h2>
+                    <p class="text-sm text-slate-500">Messages aggregated live from WhatsApp, Instagram, and Facebook.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 border border-slate-200 rounded-xl overflow-hidden bg-slate-50 min-h-[500px]">
+                    <!-- Message list -->
+                    <div class="bg-white border-r border-slate-200 flex flex-col">
+                        <div class="p-3 border-b border-slate-100">
+                            <input type="text" placeholder="Search conversations..." class="w-full bg-slate-100 text-sm px-3 py-2 rounded-lg outline-none text-slate-700">
+                        </div>
+                        <div class="divide-y divide-slate-100 overflow-y-auto flex-1">
+                            <div onclick="selectConversation('1')" class="p-3.5 hover:bg-slate-50 cursor-pointer transition bg-blue-50/50 border-l-4 border-blue-600">
+                                <div class="flex justify-between items-start mb-1">
+                                    <span class="font-semibold text-sm text-slate-900">Chidinma Adeleke</span>
+                                    <span class="text-[10px] text-slate-400">10:42 AM</span>
+                                </div>
+                                <p class="text-xs text-slate-600 truncate">Please send the final price for Dubai flight...</p>
+                                <div class="mt-2 flex items-center space-x-1 text-[10px] text-emerald-600 font-medium">
+                                    <i class="fa-brands fa-whatsapp"></i> <span>WhatsApp</span>
+                                </div>
+                            </div>
+                            <div onclick="selectConversation('2')" class="p-3.5 hover:bg-slate-50 cursor-pointer transition">
+                                <div class="flex justify-between items-start mb-1">
+                                    <span class="font-semibold text-sm text-slate-900">Tunde Bakare</span>
+                                    <span class="text-[10px] text-slate-400">Yesterday</span>
+                                </div>
+                                <p class="text-xs text-slate-600 truncate">Can I pay in two installments?</p>
+                                <div class="mt-2 flex items-center space-x-1 text-[10px] text-pink-600 font-medium">
+                                    <i class="fa-brands fa-instagram"></i> <span>Instagram DM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat conversation pane -->
+                    <div class="lg:col-span-2 bg-white flex flex-col justify-between">
+                        <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 font-bold flex items-center justify-center">CA</div>
+                                <div>
+                                    <h3 class="font-semibold text-sm text-slate-900">Chidinma Adeleke</h3>
+                                    <p class="text-xs text-emerald-600 flex items-center"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5"></span> Active on WhatsApp</p>
+                                </div>
+                            </div>
+                            <button onclick="openModal('quickLeadModal')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-medium transition">
+                                <i class="fa-solid fa-user-plus mr-1"></i> Convert to Lead
+                            </button>
+                        </div>
+
+                        <!-- Chat stream -->
+                        <div class="p-4 space-y-3 overflow-y-auto flex-1 bg-slate-50/50 max-h-[350px]" id="chatStream">
+                            <div class="flex justify-start">
+                                <div class="bg-white border border-slate-200 text-slate-800 text-xs p-3 rounded-2xl rounded-tl-sm max-w-xs shadow-sm">
+                                    Hello! I need a travel quote for 2 adults visiting Dubai next month.
+                                    <span class="block text-[9px] text-slate-400 mt-1 text-right">10:30 AM</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-end">
+                                <div class="bg-blue-600 text-white text-xs p-3 rounded-2xl rounded-tr-sm max-w-xs shadow-sm">
+                                    Hi Chidinma! Thanks for reaching out. I'll put together a custom package right away.
+                                    <span class="block text-[9px] text-blue-200 mt-1 text-right">10:35 AM</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-start">
+                                <div class="bg-white border border-slate-200 text-slate-800 text-xs p-3 rounded-2xl rounded-tl-sm max-w-xs shadow-sm">
+                                    Please send the final price for Dubai flight and hotel package.
+                                    <span class="block text-[9px] text-slate-400 mt-1 text-right">10:42 AM</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reply input -->
+                        <div class="p-3 border-t border-slate-100 bg-white flex items-center space-x-2">
+                            <input type="text" id="chatInput" placeholder="Type reply to send via WhatsApp..." class="flex-1 bg-slate-100 text-xs px-3.5 py-2.5 rounded-xl outline-none text-slate-700">
+                            <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5">
+                                <span>Send</span> <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: QUOTE BUILDER -->
+            <div id="tab-quote" class="tab-content hidden space-y-6">
+                <div class="pb-4 border-b border-slate-100">
+                    <h2 class="text-xl font-bold text-slate-900">Instant Quote Builder</h2>
+                    <p class="text-sm text-slate-500">Generate professional price summaries and send straight to client WhatsApp.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl space-y-4">
+                        <h3 class="font-semibold text-slate-900 text-sm">Quote Parameters</h3>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-700 mb-1">Client Name</label>
+                            <input type="text" id="qClientName" value="Chidinma Adeleke" class="w-full bg-white border border-slate-200 text-sm px-3 py-2 rounded-lg outline-none text-slate-700">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-700 mb-1">Package Description</label>
+                            <input type="text" id="qPackage" value="Dubai 5-Day Holiday (Flight + 4* Hotel + Visa)" class="w-full bg-white border border-slate-200 text-sm px-3 py-2 rounded-lg outline-none text-slate-700">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Amount (NGN)</label>
+                                <input type="text" id="qAmount" value="850,000" class="w-full bg-white border border-slate-200 text-sm px-3 py-2 rounded-lg outline-none text-slate-700">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Valid Until</label>
+                                <input type="text" id="qValid" value="48 Hours" class="w-full bg-white border border-slate-200 text-sm px-3 py-2 rounded-lg outline-none text-slate-700">
+                            </div>
+                        </div>
+                        <button onclick="generateQuotePreview()" class="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold py-2.5 rounded-lg transition shadow-sm">
+                            Update Preview
+                        </button>
+                    </div>
+
+                    <div class="bg-slate-900 text-white p-6 rounded-xl flex flex-col justify-between shadow-lg">
+                        <div>
+                            <div class="flex justify-between items-center pb-4 border-b border-slate-800 mb-4">
+                                <span class="font-bold text-sm tracking-tight">DEESCONCEPT QUOTATION</span>
+                                <span class="text-xs text-blue-400 font-mono">#DC-2026-09</span>
+                            </div>
+                            <div class="space-y-3 text-sm">
+                                <div>
+                                    <span class="text-xs text-slate-400 block">Prepared For:</span>
+                                    <span id="previewClient" class="font-semibold text-white">Chidinma Adeleke</span>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-slate-400 block">Package:</span>
+                                    <span id="previewPackage" class="text-slate-200 text-xs">Dubai 5-Day Holiday (Flight + 4* Hotel + Visa)</span>
+                                </div>
+                                <div class="pt-2 flex justify-between items-center border-t border-slate-800">
+                                    <span class="text-xs text-slate-400">Total Price:</span>
+                                    <span id="previewAmount" class="font-bold text-emerald-400 text-lg">₦850,000</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-800 flex space-x-3">
+                            <button onclick="sendQuoteWhatsApp()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold py-2.5 rounded-lg transition flex items-center justify-center space-x-2">
+                                <i class="fa-brands fa-whatsapp text-sm"></i>
+                                <span>Send to WhatsApp</span>
+                            </button>
+                            <button onclick="copyQuoteText()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3.5 py-2.5 rounded-lg transition">
+                                <i class="fa-solid fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: BUSINESS CARD SCANNER -->
+            <div id="tab-scanner" class="tab-content hidden space-y-6">
+                <div class="pb-4 border-b border-slate-100">
+                    <h2 class="text-xl font-bold text-slate-900">Business Card Scanner</h2>
+                    <p class="text-sm text-slate-500">Capture physical cards to automatically parse and save contact leads.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div class="bg-slate-900 border-2 border-dashed border-slate-700 rounded-2xl p-6 text-center flex flex-col items-center justify-center min-h-[280px] relative overflow-hidden">
+                        <div class="absolute inset-0 bg-blue-500/5 backdrop-blur-[1px] flex items-center justify-center">
+                            <div class="w-64 h-36 border-2 border-blue-400/80 rounded-xl relative flex items-center justify-center shadow-lg">
+                                <span class="absolute -top-3 bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded font-mono uppercase">Align Card Here</span>
+                                <div class="w-full h-0.5 bg-blue-400/50 absolute animate-pulse"></div>
+                            </div>
+                        </div>
+                        <div class="relative z-10 space-y-3 mt-24">
+                            <button onclick="simulateScanCard()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-xs font-semibold shadow-md transition flex items-center space-x-2 mx-auto">
+                                <i class="fa-solid fa-camera"></i>
+                                <span>Capture & Scan Card</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl space-y-4">
+                        <h3 class="font-semibold text-slate-900 text-sm">Extracted Lead Data</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Full Name</label>
+                                <input type="text" id="scanName" value="Dr. Adebayo Salami" class="w-full bg-white border border-slate-200 text-sm px-3 py-2 rounded-lg outline-none text-slate-700">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Phone Number</label>
+                                <input type="text" id="scanPhone" value="+234 803 456 7890" class="w-full bg-white border border-slate-200 text-sm px-3 py-2 rounded-lg outline-none text-slate-700">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Company / Email</label>
+                                <input type="text" id="scanEmail" value="salami@apexholdings.ng" class="w-full bg-white border border-slate-200 text-sm px-3 py-2 rounded-lg outline-none text-slate-700">
+                            </div>
+                        </div>
+                        <button onclick="saveScannedLead()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold py-2.5 rounded-lg transition shadow-sm">
+                            Save Directly to Leads
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: MONEY TRACKER -->
+            <div id="tab-money" class="tab-content hidden space-y-6">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Money Tracker</h2>
+                        <p class="text-sm text-slate-500">Monitor revenue, vendor expenses, and outstanding customer balances.</p>
+                    </div>
+                    <button onclick="showToast('New transaction modal opened')" class="bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center space-x-2">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span>Add Entry</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-emerald-50/60 border border-emerald-200/80 p-4 rounded-xl">
+                        <span class="text-xs font-semibold text-emerald-700 uppercase tracking-wider">Total Revenue</span>
+                        <div class="text-2xl font-bold text-emerald-900 mt-1">₦2,150,000</div>
+                    </div>
+                    <div class="bg-rose-50/60 border border-rose-200/80 p-4 rounded-xl">
+                        <span class="text-xs font-semibold text-rose-700 uppercase tracking-wider">Vendor Expenses</span>
+                        <div class="text-2xl font-bold text-rose-900 mt-1">₦700,000</div>
+                    </div>
+                    <div class="bg-blue-50/60 border border-blue-200/80 p-4 rounded-xl">
+                        <span class="text-xs font-semibold text-blue-700 uppercase tracking-wider">Net Profit</span>
+                        <div class="text-2xl font-bold text-blue-900 mt-1">₦1,450,000</div>
+                    </div>
+                </div>
+
+                <div class="border border-slate-200 rounded-xl overflow-hidden bg-white">
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 border-b border-slate-200">
+                                <th class="p-3 font-semibold">Client / Vendor</th>
+                                <th class="p-3 font-semibold">Category</th>
+                                <th class="p-3 font-semibold">Date</th>
+                                <th class="p-3 font-semibold text-right">Amount (NGN)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr>
+                                <td class="p-3 font-medium text-slate-900">Chidinma Adeleke (Dubai Holiday)</td>
+                                <td class="p-3"><span class="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded font-medium">Income</span></td>
+                                <td class="p-3 text-slate-500">Oct 7, 2026</td>
+                                <td class="p-3 text-right font-bold text-emerald-600">+₦850,000</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium text-slate-900">Emirates Flight Booking</td>
+                                <td class="p-3"><span class="bg-rose-100 text-rose-800 text-[10px] px-2 py-0.5 rounded font-medium">Expense</span></td>
+                                <td class="p-3 text-slate-500">Oct 6, 2026</td>
+                                <td class="p-3 text-right font-bold text-rose-600">-₦500,000</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium text-slate-900">Tunde Bakare (UK Visa Assist)</td>
+                                <td class="p-3"><span class="bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded font-medium">Income</span></td>
+                                <td class="p-3 text-slate-500">Oct 4, 2026</td>
+                                <td class="p-3 text-right font-bold text-emerald-600">+₦300,000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 7: SALES BIBLE -->
+            <div id="tab-salesbible" class="tab-content hidden space-y-6">
+                <div class="pb-4 border-b border-slate-100">
+                    <h2 class="text-xl font-bold text-slate-900">Sales Bible & Operating Manual</h2>
+                    <p class="text-sm text-slate-500">Internal guidelines, standard responses, and escalation hierarchy for team members.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                        <div class="flex items-center space-x-2 text-blue-600 font-semibold text-xs mb-2 uppercase tracking-wide">
+                            <i class="fa-solid fa-user-check"></i>
+                            <span>Staff Can Handle</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            General inquiries, basic package pricing, availability checks, standard quotations, and preliminary client onboarding.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                        <div class="flex items-center space-x-2 text-amber-600 font-semibold text-xs mb-2 uppercase tracking-wide">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>Manager Approval</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Custom discounts above 10%, special corporate packages, refunds, booking date changes after confirmation, and high-value vendor negotiations.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                        <div class="flex items-center space-x-2 text-rose-600 font-semibold text-xs mb-2 uppercase tracking-wide">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span>Management Only</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Legal issues, severe service complaints, chargeback disputes, fraud concerns, and official partnership contracts.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl space-y-3">
+                    <h3 class="font-semibold text-slate-900 text-sm">Quick Response Templates</h3>
+                    <div class="space-y-2">
+                        <div class="bg-white border border-slate-200 p-3 rounded-lg text-xs space-y-1">
+                            <div class="font-semibold text-slate-800 flex justify-between">
+                                <span>Greeting & Brochure Dispatch</span>
+                                <button onclick="showToast('Template copied to clipboard!')" class="text-blue-600 hover:underline">Copy</button>
+                            </div>
+                            <p class="text-slate-600 font-mono text-[11px]">Hello! Thank you for contacting Deesconcept. We curate seamless travel & booking experiences. Kindly share your destination and travel dates so we can send a tailored quote right away!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
-    <!-- JavaScript to Handle Sidebar Toggle -->
+    <!-- Modal: Add Lead -->
+    <div id="quickLeadModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+                <h3 class="font-bold text-slate-900 text-base">Add New Client Lead</h3>
+                <button onclick="closeModal('quickLeadModal')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Client Name</label>
+                    <input type="text" id="newLeadName" placeholder="e.g. Funke Akindele" class="w-full bg-slate-50 border border-slate-200 text-sm px-3.5 py-2.5 rounded-xl outline-none text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Service / Package</label>
+                    <input type="text" id="newLeadService" placeholder="e.g. UK Study Visa" class="w-full bg-slate-50 border border-slate-200 text-sm px-3.5 py-2.5 rounded-xl outline-none text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-700 mb-1">Source Channel</label>
+                    <select id="newLeadSource" class="w-full bg-slate-50 border border-slate-200 text-sm px-3.5 py-2.5 rounded-xl outline-none text-slate-700">
+                        <option value="WhatsApp">WhatsApp</option>
+                        <option value="Instagram">Instagram</option>
+                        <option value="Facebook">Facebook</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex space-x-3 pt-2">
+                <button onclick="closeModal('quickLeadModal')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold py-2.5 rounded-xl transition">Cancel</button>
+                <button onclick="submitNewLead()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold py-2.5 rounded-xl transition">Save Lead</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center space-x-2">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastText">Action successful!</span>
+    </div>
+
+    <!-- JavaScript Application Logic -->
     <script>
-        const sidebar = document.getElementById('sidebar');
-        const menuBtn = document.getElementById('menuBtn');
-        const closeSidebar = document.getElementById('closeSidebar');
+        // In-memory leads database
+        let leads = [
+            { id: 1, name: "Chidinma Adeleke", service: "Dubai Holiday 5D", source: "WhatsApp", status: "quote", amount: "₦850,000", time: "10:42 AM" },
+            { id: 2, name: "Tunde Bakare", service: "UK Visa Assist", source: "Instagram", status: "new", amount: "₦300,000", time: "Yesterday" },
+            { id: 3, name: "Grace Okafor", service: "Canada Flight Ticket", source: "WhatsApp", status: "new", amount: "₦1,200,000", time: "Oct 5" },
+            { id: 4, name: "Ibrahim Musa", service: "Lagos Hotel Booking", source: "Facebook", status: "closed", amount: "₦150,000", time: "Oct 2" }
+        ];
 
-        menuBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('open');
-        });
+        // Toggle Sidebar for mobile & quick access
+        function toggleSidebar() {
+            const sidebar = document.getElementById('appSidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            const icon = document.getElementById('hamburgerIcon');
 
-        closeSidebar.addEventListener('click', () => {
-            sidebar.classList.remove('open');
-        });
+            if (sidebar.classList.contains('-translate-x-72')) {
+                sidebar.classList.remove('-translate-x-72');
+                sidebar.classList.add('translate-x-0');
+                backdrop.classList.remove('hidden');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            } else {
+                sidebar.classList.remove('translate-x-0');
+                sidebar.classList.add('-translate-x-72');
+                backdrop.classList.add('hidden');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
+        }
 
-        // Close sidebar when clicking menu links on mobile
-        document.querySelectorAll('.sidebar-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 1024) {
-                    sidebar.classList.remove('open');
-                }
-                
-                // Active class toggle
-                document.querySelectorAll('.sidebar-menu a').forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-50', 'text-blue-600');
+                btn.classList.add('text-slate-600', 'hover:bg-slate-50', 'hover:text-slate-900');
             });
-        });
+
+            const activeBtn = document.querySelector(`[data-tab="${tabId}"]`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-50', 'hover:text-slate-900');
+                activeBtn.classList.add('bg-blue-50', 'text-blue-600');
+            }
+
+            if (tabId === 'leads') {
+                renderLeadsBoard();
+            }
+
+            // Close sidebar automatically on mobile after selecting a tab
+            if (window.innerWidth < 768) {
+                const sidebar = document.getElementById('appSidebar');
+                if (!sidebar.classList.contains('-translate-x-72')) {
+                    toggleSidebar();
+                }
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Render Kanban Leads Board
+        function renderLeadsBoard() {
+            const colNew = document.getElementById('columnNew');
+            const colQuote = document.getElementById('columnQuote');
+            const colClosed = document.getElementById('columnClosed');
+
+            colNew.innerHTML = '';
+            colQuote.innerHTML = '';
+            colClosed.innerHTML = '';
+
+            let countN = 0, countQ = 0, countC = 0;
+
+            leads.forEach(lead => {
+                const cardHTML = `
+                    <div draggable="true" ondragstart="drag(event, ${lead.id})" class="bg-white border border-slate-200/80 p-3.5 rounded-xl shadow-sm hover:shadow transition cursor-grab active:cursor-grabbing space-y-2">
+                        <div class="flex justify-between items-start">
+                            <span class="font-semibold text-xs text-slate-900">${lead.name}</span>
+                            <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">${lead.source}</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500">${lead.service}</p>
+                        <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-[10px]">
+                            <span class="font-bold text-slate-800">${lead.amount}</span>
+                            <span class="text-slate-400">${lead.time}</span>
+                        </div>
+                    </div>
+                `;
+
+                if (lead.status === 'new') {
+                    colNew.innerHTML += cardHTML;
+                    countN++;
+                } else if (lead.status === 'quote') {
+                    colQuote.innerHTML += cardHTML;
+                    countQ++;
+                } else if (lead.status === 'closed') {
+                    colClosed.innerHTML += cardHTML;
+                    countC++;
+                }
+            });
+
+            document.getElementById('countNew').innerText = countN;
+            document.getElementById('countQuote').innerText = countQ;
+            document.getElementById('countClosed').innerText = countC;
+            document.getElementById('leadBadge').innerText = leads.length;
+            document.getElementById('statTotalLeads').innerText = leads.length;
+        }
+
+        // Drag and drop handlers
+        let draggedLeadId = null;
+        function drag(event, id) {
+            draggedLeadId = id;
+        }
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+        function dropLead(event, newStatus) {
+            event.preventDefault();
+            const lead = leads.find(l => l.id === draggedLeadId);
+            if (lead) {
+                lead.status = newStatus;
+                renderLeadsBoard();
+                showToast(`Lead moved to ${newStatus.toUpperCase()}`);
+            }
+        }
+
+        // Modals management
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Toast notification helper
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Submit new lead
+        function submitNewLead() {
+            const name = document.getElementById('newLeadName').value.trim();
+            const service = document.getElementById('newLeadService').value.trim();
+            const source = document.getElementById('newLeadSource').value;
+
+            if (!name || !service) {
+                showToast('Please fill in all fields.');
+                return;
+            }
+
+            leads.push({
+                id: Date.now(),
+                name: name,
+                service: service,
+                source: source,
+                status: 'new',
+                amount: '₦450,000',
+                time: 'Just now'
+            });
+
+            closeModal('quickLeadModal');
+            renderLeadsBoard();
+            showToast('New lead added successfully!');
+            document.getElementById('newLeadName').value = '';
+            document.getElementById('newLeadService').value = '';
+        }
+
+        // Copy shareable link
+        function copyShareableLink() {
+            document.execCommand('copy');
+            showToast('Capture link copied to clipboard!');
+        }
+
+        // Quote builder preview updater
+        function generateQuotePreview() {
+            document.getElementById('previewClient').innerText = document.getElementById('qClientName').value;
+            document.getElementById('previewPackage').innerText = document.getElementById('qPackage').value;
+            document.getElementById('previewAmount').innerText = '₦' + document.getElementById('qAmount').value;
+            showToast('Quote preview updated!');
+        }
+
+        function copyQuoteText() {
+            showToast('Quote summary copied for WhatsApp!');
+        }
+
+        function sendQuoteWhatsApp() {
+            showToast('Redirecting quote to WhatsApp chat...');
+        }
+
+        // Scanner simulation
+        function simulateScanCard() {
+            showToast('Business card successfully parsed by OCR scanner!');
+        }
+
+        function saveScannedLead() {
+            const name = document.getElementById('scanName').value;
+            leads.push({
+                id: Date.now(),
+                name: name,
+                service: 'Scanned Card Inquiry',
+                source: 'WhatsApp',
+                status: 'new',
+                amount: '₦500,000',
+                time: 'Just now'
+            });
+            showToast('Scanned contact saved to Leads!');
+            switchTab('leads');
+        }
+
+        // Chat simulation
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if(!text) return;
+
+            const stream = document.getElementById('chatStream');
+            stream.innerHTML += `
+                <div class="flex justify-end">
+                    <div class="bg-blue-600 text-white text-xs p-3 rounded-2xl rounded-tr-sm max-w-xs shadow-sm">
+                        ${text}
+                        <span class="block text-[9px] text-blue-200 mt-1 text-right">Just now</span>
+                    </div>
+                </div>
+            `;
+            input.value = '';
+            stream.scrollTop = stream.scrollHeight;
+            showToast('Reply dispatched via WhatsApp API');
+        }
+
+        function selectConversation(id) {
+            showToast('Loaded conversation history.');
+        }
+
+        // Initial render on load
+        window.onload = function() {
+            renderLeadsBoard();
+        };
     </script>
 </body>
 </html>
